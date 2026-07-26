@@ -1,0 +1,53 @@
+package net.example.attributeswap;
+
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.Text;
+import org.lwjgl.glfw.GLFW;
+
+public class AttributeSwapMod implements ClientModInitializer {
+    public static final String MOD_ID = "attributeswap";
+    
+    public static KeyBinding toggleBinding;
+    public static KeyBinding saveSlotBinding;
+    
+    public static boolean isEnabled = false;
+    public static int savedSlot = -1;
+
+    @Override
+    public void onInitializeClient() {
+        // Регистрация клавиши переключения мода (теперь на 'Z')
+        toggleBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.attributeswap.toggle",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_Z,
+                "category.attributeswap"
+        ));
+
+        // Регистрация клавиши сохранения текущего слота (теперь на 'X')
+        saveSlotBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.attributeswap.save",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_X,
+                "category.attributeswap"
+        ));
+
+        // Обработка нажатий клавиш в каждом тике клиента
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.player == null) return;
+
+            while (toggleBinding.wasPressed()) {
+                isEnabled = !isEnabled;
+                client.player.sendMessage(Text.literal("§6[AttributeSwap]§r Мод: " + (isEnabled ? "§aВКЛ" : "§cВЫКЛ")), true);
+            }
+
+            while (saveSlotBinding.wasPressed()) {
+                savedSlot = client.player.getInventory().selectedSlot;
+                client.player.sendMessage(Text.literal("§6[AttributeSwap]§r Слот §e" + (savedSlot + 1) + "§r успешно сохранен!"), true);
+            }
+        });
+    }
+}

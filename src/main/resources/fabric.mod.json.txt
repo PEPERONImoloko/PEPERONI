@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "attributeswap",
+  "version": "1.0.0",
+  "name": "AttributeSwap",
+  "description": "Мод для сохранения и переключения слотов",
+  "authors": [
+    "ExampleAuthor"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/attributeswap/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "net.example.attributeswap.AttributeSwapMod"
+    ]
+  },
+  "mixins": [
+    "attributeswap.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
